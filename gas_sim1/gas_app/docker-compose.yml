@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+openplc:
+image: tuttas/openplc_v3:latest
+container_name: openplc
+ports:
+- "8080:8080" # OpenPLC web UI
+- "502:502" # Modbus/TCP
+volumes:
+- ./openplc:/home/openplc/scripts
+restart: unless-stopped
+
+
+flaskapp:
+build: ./flask_app
+container_name: gas_sim_flask
+ports:
+- "5000:5000"
+volumes:
+- ./flask_app:/app
+- ./data:/data
+environment:
+- OPENPLC_HOST=openplc
+- OPENPLC_PORT=502
+depends_on:
+- openplc
+restart: unless-stopped

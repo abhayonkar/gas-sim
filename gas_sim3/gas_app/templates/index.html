@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gas Pipeline Simulator</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Industrial Gas Pipeline Simulator</h1>
+    <button onclick="loadNetwork()">Load GasLib Network</button>
+    <button onclick="runSim()">Run Simulation</button>
+    <button onclick="stopSim()">Stop Simulation</button>
+    <div id="plot"></div>
+    <script>
+        function loadNetwork() { fetch('/load_network', {method: 'POST'}).then(res => res.json()).then(data => alert(data.status)); }
+        function runSim() {
+            fetch('/run_simulation', {method: 'POST'}).then(res => res.json()).then(data => {
+                Plotly.newPlot('plot', JSON.parse(data.graph).data, JSON.parse(data.graph).layout);
+                console.log(data.transient);
+            });
+        }
+        function stopSim() { fetch('/stop_simulation', {method: 'POST'}).then(res => res.json()).then(data => alert(data.status)); }
+    </script>
+</body>
+</html>

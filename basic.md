@@ -16,6 +16,33 @@ By leveraging a multi-layered, containerized architecture, the simulator achieve
 
 The recommended system architecture is a multi-layered, containerized design orchestrated by the ICSsim framework to ensure modularity, realism, and security. [recommended_architecture_overview[0]][1] The architecture is segmented into distinct layers, each running in isolated Docker containers with controlled network communication, mirroring the Purdue Reference Model for ICS. [executive_summary[0]][1]
 
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Web Interface │    │   SCADA/ICS     │    │   IDS Security  │
+│     (Flask)     │◄──►│   Simulator     │◄──►│     System      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         ▲                       ▲
+         │                       │
+         ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐
+│   Data Storage  │    │  Physics Engine │
+│   (TimescaleDB) │    │   (Python/MATLAB)│
+└─────────────────┘    └─────────────────┘
+                               ▲
+                               │
+                               ▼
+                      ┌─────────────────┐
+                      │  Pipeline Model │
+                      │   (GasLib-134)  │
+                      └─────────────────┘
+                               ▲
+                               │
+                               ▼
+                      ┌─────────────────┐
+                      │   PLC Emulation │
+                      │    (OpenPLC)    │
+                      └─────────────────┘
+
+
 ### 2.1 Physical Process Layer: GasLib-134 + Simscape Gas hits transient accuracy at <10 ms step size
 
 The foundation of the simulator is a high-fidelity physical process model of the **GasLib-134** pipeline network, a standardized, publicly available, and complex gas network instance with **134 nodes** designed for research and benchmarking. [key_technology_recommendations.1.justification[0]][2] [key_technology_recommendations.1.justification[1]][6] This model is built in **MATLAB/Simulink** using the **Simscape Gas library**, which provides specialized blocks for pipes, compressors, and valves, and supports real gas models for accurate transient dynamic simulation. [key_technology_recommendations.0.justification[0]][7] [key_technology_recommendations.0.justification[3]][8]
@@ -223,3 +250,5 @@ Success will be measured against a clear set of KPIs that track performance, fid
 * Integrate a more advanced data historian with machine learning capabilities for automated anomaly detection.
 * Develop a formal curriculum for using the simulator as a cyber-range for operator and blue-team training.
 * Achieve hard real-time performance (<10ms latency) by deploying the system on an RTOS with the PREEMPT_RT patch. [performance_benchmarking_and_hardware.hardware_and_rtos_guidance[1]][39]
+
+
